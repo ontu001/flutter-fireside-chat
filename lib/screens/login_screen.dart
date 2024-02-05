@@ -1,7 +1,10 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, library_private_types_in_public_api
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat/constants.dart';
+import 'package:flutter_firebase_chat/screens/chat_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../widgets/RoundedButton.dart';
 
@@ -12,6 +15,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _auth = FirebaseAuth.instance;
+  String email = '';
+  String password = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,8 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 48.0,
             ),
             TextField(
+              keyboardType: TextInputType.emailAddress,
               onChanged: (value) {
-                //Do something with the user input.
+                email = value;
               },
               decoration: kTextFiledDecoretaion.copyWith(
                   hintText: 'Enter your email'
@@ -44,8 +51,9 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 8.0,
             ),
             TextField(
+              obscureText: true,
               onChanged: (value) {
-                //Do something with the user input.
+                password = value;
               },
               decoration: kTextFiledDecoretaion.copyWith(
                 hintText: 'Enter your password'
@@ -56,7 +64,23 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             RoundedButton(
                 color: Colors.lightBlueAccent,
-                onpressed: () {},
+                onpressed: () async{
+                     try {
+                    final newUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
+                    if (newUser != null) {
+                      Fluttertoast.showToast(
+                          msg: "Log In Successful",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.blueGrey,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                          Navigator.pushNamed(context, ChatScreen.id);
+                    }
+                  } catch (e) {
+                    print(e.toString());
+                  }
+                },
                 title: "Log In"),
           ],
         ),
@@ -64,3 +88,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
