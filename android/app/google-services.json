@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "396437525014",
+    "project_id": "fireside-chat-933fd",
+    "storage_bucket": "fireside-chat-933fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396437525014:android:9ab5e213d5dc31dc531b37",
+        "android_client_info": {
+          "package_name": "com.example.flutter_firebase_chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKSolPRE6MxubcEPdFF-d_zIklBz83i8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
