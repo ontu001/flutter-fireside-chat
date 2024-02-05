@@ -1,7 +1,8 @@
 // ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_firebase_chat/screens/chat_screen.dart';
 import '../constants.dart';
 import '../widgets/RoundedButton.dart';
 
@@ -12,6 +13,9 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final _auth = FirebaseAuth.instance;
+  String email = '';
+  String password = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,29 +37,41 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               height: 48.0,
             ),
             TextField(
+              keyboardType: TextInputType.emailAddress,
               onChanged: (value) {
-                //Do something with the user input.
+                email = value;
               },
-                decoration: kTextFiledDecoretaion.copyWith(
-                    hintText: 'Enter your email'
-                ),
+              decoration:
+                  kTextFiledDecoretaion.copyWith(hintText: 'Enter your email'),
             ),
             SizedBox(
               height: 8.0,
             ),
             TextField(
+              obscureText: true,
               onChanged: (value) {
-                //Do something with the user input.
+                password = value;
               },
-                decoration: kTextFiledDecoretaion.copyWith(
-                    hintText: 'Enter your password'
-                ),
+              decoration: kTextFiledDecoretaion.copyWith(
+                  hintText: 'Enter your password'),
             ),
             SizedBox(
               height: 24.0,
             ),
             RoundedButton(
-                color: Colors.blueAccent, onpressed: () {}, title: "Register")
+                color: Colors.blueAccent,
+                onpressed: () async {
+                  try {
+                    final newUser = await _auth.createUserWithEmailAndPassword(
+                        email: email, password: password);
+                    if (newUser != null) {
+                      Navigator.pushNamed(context, ChatScreen.id);
+                    }
+                  } catch (e) {
+                    print(e.toString());
+                  }
+                },
+                title: "Register")
           ],
         ),
       ),

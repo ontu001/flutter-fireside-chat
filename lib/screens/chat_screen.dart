@@ -1,5 +1,8 @@
 // ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors
 
+import 'dart:math';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
@@ -11,6 +14,24 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _auth = FirebaseAuth.instance;
+  late User loggedInuser;
+
+  void getNewUser(){
+    try{
+      final user = _auth.currentUser;
+      if(user != null){
+        loggedInuser = user;
+        print(loggedInuser.email);
+      }
+    }catch(e){print(e.toString());}
+  }
+
+  @override
+  void initState() {
+    getNewUser();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
