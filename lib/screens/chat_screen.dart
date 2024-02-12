@@ -33,7 +33,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
   void getUserMessage()async{
-    final message = await _firestore.collection('message').get();
+    final message = await _firestore.collection('messages').get();
     for (var messages in message.docs ){
       print(messages.data());
     }
@@ -41,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
   void getStreamMessage()async{
-    await for (var snapshot in _firestore.collection('message').snapshots()){
+    await for (var snapshot in _firestore.collection('messages').snapshots()){
       for (var messages in snapshot.docs ){
       print(messages.data());
     }
@@ -76,6 +76,34 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection('messages').snapshots(), 
+              builder: (context, snapshot){
+                if (snapshot.hasData) {
+                  final messages = snapshot.data!.docs;
+                  
+                  List<Text> messageWidgets =[];
+                  for (var message in messages){
+                    final messageText = message['text'];
+                    final messageSender = message['sender'];
+                    messageWidgets.add(Text('$messageSender : $messageText'));
+                  }
+
+                  return Column(
+                    children: messageWidgets,
+                  );
+                }else{
+                  return SizedBox(
+                    width: 200,
+                    height: 50,
+                    child: CircularProgressIndicator(backgroundColor: Colors.lightBlueAccent),
+                  );
+                }
+              }
+              ),
+
+
+
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -92,9 +120,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   TextButton(
                     style:  TextButton.styleFrom(textStyle: kSendButtonTextStyle),
                     onPressed: () {
-                      _firestore.collection('message').add({
-                        'text': textMessage,
+                      _firestore.collection('messages').add({
                         'sender': loggedInuser.email,
+                        'text': textMessage,
+                        
                       });
                     },
                     child: const Text(
